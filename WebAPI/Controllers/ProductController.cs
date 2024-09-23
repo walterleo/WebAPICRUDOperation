@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("api/[controller]/[action]")]
   [ApiController]
   public class ProductController : ControllerBase
   {
@@ -16,7 +16,7 @@ namespace WebAPI.Controllers
       _db = db;
     }
 
-    // GET: api/product
+    // GET: api/product/getall
     [HttpGet]
     public IEnumerable<Product> GetAll()
     {
@@ -24,7 +24,7 @@ namespace WebAPI.Controllers
       
     }
 
-    // GET: api/product
+    // GET: api/product/getproduct
     [HttpGet]
     public IEnumerable<Product> GetProduct()
     {
@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
 
     }
 
-    // GET: api/product/{id}
+    // GET: api/product/get/{id}
     [HttpGet("{id}")]
     public Product Get(int id)
     {      
