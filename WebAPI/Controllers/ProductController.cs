@@ -20,13 +20,29 @@ namespace WebAPI.Controllers
     [HttpGet]
     public IEnumerable<Product> GetAll()
     {
-      return _db.Products.ToList();
+      return _db.Products.ToList(); // data +dataType
       
+    }
+
+    [HttpGet]
+    public IActionResult GetList()
+    {
+      var products = _db.Products.ToList();  // data + custom status code
+      return Ok(products);
+
+    }
+
+    [HttpGet]
+    public ActionResult<IEnumerable<Product>> GetProduct()
+    {
+      var products = _db.Products.ToList();  // data + custom status code
+      return Ok(products);
+
     }
 
     // GET: api/product/getproduct
     [HttpGet]
-    public IEnumerable<Product> GetProduct()
+    public IEnumerable<Product> GetProducts()
     {
       return _db.Products.Include(p=>p.Category).ToList();
 
@@ -40,6 +56,102 @@ namespace WebAPI.Controllers
 
     }
 
+
+    [HttpPost]
+    public IActionResult Add(Product product)
+    {
+      try
+      {
+        _db.Products.Add(product);
+        _db.SaveChanges();
+        return CreatedAtAction("Get", product); /// 201
+
+      }
+      catch (Exception ex)
+      {
+
+        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message); // 500
+      }
+
+    }
+
+
+
+    [HttpPut("{id}")]
+    public IActionResult Update([FromQuery]int id, [FromBody] Product product)
+    {
+      try
+      {
+        if(id != product.ProductId)
+        { 
+          return BadRequest();
+        
+        }
+
+        _db.Products.Update(product);
+        _db.SaveChanges();
+        return Ok(product); /// 201
+
+      }
+      catch (Exception ex)
+      {
+
+        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message); // 500
+      }
+
+    }
+
+    [HttpPatch("{id}/{price}")]
+    public IActionResult PatchProductPrice(int id, string price)
+    {
+      try
+      {
+        var product = _db.Products.Find(id);
+        if (product == null)
+        {
+          return NotFound();
+
+        }
+
+        product.Price = price;
+        _db.SaveChanges();
+        return Ok(product); /// 200
+
+      }
+      catch (Exception ex)
+      {
+
+        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message); // 500
+      }
+
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+
+      try
+      {
+        var product = _db.Products.Find(id);
+        if (product == null)
+        {
+          return NotFound();
+
+        }
+
+        _db.Products.Remove(product);
+        _db.SaveChanges();
+        return Ok(); /// 201
+
+      }
+      catch (Exception ex)
+      {
+
+        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message); // 500
+      }
+
+    }
+        
 
 
 
